@@ -4,6 +4,7 @@ import OpenAI from 'openai';
 // Create an OpenAI API client (that's edge friendly!)
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY || '',
+  baseURL: process.env.OPENAI_BASE_URL
 });
 
 // Allow streaming responses up to 30 seconds
@@ -70,7 +71,7 @@ export async function POST(req: Request) {
                 case 'getRoomTemperature': {
                   const temperature =
                     homeTemperatures[
-                      parameters.room as keyof typeof homeTemperatures
+                    parameters.room as keyof typeof homeTemperatures
                     ];
 
                   return {
@@ -82,7 +83,7 @@ export async function POST(req: Request) {
                 case 'setRoomTemperature': {
                   const oldTemperature =
                     homeTemperatures[
-                      parameters.room as keyof typeof homeTemperatures
+                    parameters.room as keyof typeof homeTemperatures
                     ];
 
                   homeTemperatures[
