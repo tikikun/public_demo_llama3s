@@ -1,14 +1,13 @@
 'use client';
 import { useState, useRef } from 'react';
 import { useChat } from 'ai/react';
-import WavEncoder from 'wav-encoder'
+import WavEncoder from 'wav-encoder';
 
 export default function Chat() {
   const [isRecording, setIsRecording] = useState(false);
   const [audioURL, setAudioURL] = useState<string | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
-
 
   const {
     error,
@@ -29,6 +28,24 @@ export default function Chat() {
     },
   });
 
+  const submitForm = async (formData) => {
+    try {
+      const response = await fetch('/api/tokenize', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to tokenize audio');
+      }
+
+      const data = await response.json();
+      handleSubmit(data.tokens);
+    } catch (error) {
+      console.error('Error tokenizing audio:', error);
+    }
+  };
+
   const startRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -41,38 +58,24 @@ export default function Chat() {
 
       mediaRecorderRef.current.onstop = async () => {
         const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
-
-        // Convert Blob to ArrayBuffer
         const arrayBuffer = await audioBlob.arrayBuffer();
-
-        // Create an AudioContext to decode audio data
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-
-        // Decode the audio data
         const audioData = await audioContext.decodeAudioData(arrayBuffer);
 
-        // Prepare the data for WAV encoding
         const channelData = [];
         for (let i = 0; i < audioData.numberOfChannels; i++) {
           channelData.push(audioData.getChannelData(i));
         }
 
-        // Encode to WAV format
         const wavData = await WavEncoder.encode({
           sampleRate: audioData.sampleRate,
           channelData: channelData,
         });
 
-        // Create a Blob from the WAV data
         const wavBlob = new Blob([new Uint8Array(wavData)], { type: 'audio/wav' });
         const audioUrl = URL.createObjectURL(wavBlob);
-        setAudioURL(audioUrl);
+        //setAudioURL(audioUrl);
 
-        // Log the MIME type and size of the WAV blob
-        console.log('WAV Blob MIME type:', wavBlob.type);
-        console.log('WAV Blob size:', wavBlob.size);
-
-        // Convert audio to tokens
         const formData = new FormData();
         formData.append('file', wavBlob, 'audio.wav');
 
@@ -87,7 +90,7 @@ export default function Chat() {
           }
 
           const data = await response.json();
-          setInput(data.tokens);
+          setInput(`<|sound_start|>${data.tokens}`);
         } catch (error) {
           console.error('Error tokenizing audio:', error);
         }
@@ -112,6 +115,10 @@ export default function Chat() {
     handleSubmit(e);
     setAudioURL(null);
   };
+
+  const displayInput = input.includes('<|sound_start|>') 
+    ? '🔊 🔊 Audio 🔊 🔊 ' 
+    : input;
 
   return (
     <div className="flex flex-col w-full max-w-md py-24 mx-auto stretch">
@@ -157,9 +164,14 @@ export default function Chat() {
       <form onSubmit={handleFormSubmit} className="mt-4">
         <input
           className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          value={input}
+          value={displayInput}
           placeholder="Say something..."
-          onChange={handleInputChange}
+          onChange={(e) => {
+            handleInputChange(e);
+            if (e.target.value.includes('<|sound_start|>')) {
+              setInput('This is an audio message');
+            }
+          }}
           disabled={isLoading || error != null}
         />
         <div className="flex justify-between mt-2">
