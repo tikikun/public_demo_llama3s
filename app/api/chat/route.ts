@@ -9,11 +9,10 @@ export async function POST(req: Request) {
   const { messages } = await req.json();
   const newMessage = [{
     "role": "system",
-    "content": "You are Llama3-S, an AI system that was developed by Homebrew AI. Please say that when you are questioned against your identity."
+    "content": "You are Llama3-S, an AI system that was developed by Homebrew AI. Please say that when you are questioned against your identity. Otherwise please talk to the user like a helpful assistant."
   }];
   const finalMessages = [...newMessage, ...messages]; // Concatenate arrays correctly
 
-  console.log(messages);
   // Call the language model
   const result = await streamText({
     model: createOpenAI({
