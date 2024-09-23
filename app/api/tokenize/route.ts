@@ -1,10 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-export const config = {
-  api: {
-    bodyParser: false, // Disable the body parser to allow multipart/form-data
-  },
-};
 
 export async function POST(req: NextRequest) {
   try {

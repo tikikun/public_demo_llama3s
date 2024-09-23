@@ -28,7 +28,7 @@ export default function Chat() {
     },
   });
 
-  const submitForm = async (formData) => {
+  const submitForm = async (formData: any) => {
     try {
       const response = await fetch('/api/tokenize', {
         method: 'POST',
@@ -59,7 +59,7 @@ export default function Chat() {
       mediaRecorderRef.current.onstop = async () => {
         const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
         const arrayBuffer = await audioBlob.arrayBuffer();
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const audioContext = new (window.AudioContext )();
         const audioData = await audioContext.decodeAudioData(arrayBuffer);
 
         const channelData = [];
@@ -110,7 +110,7 @@ export default function Chat() {
     }
   };
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = (e:any) => {
     e.preventDefault();
     handleSubmit(e);
     setAudioURL(null);
