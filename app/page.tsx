@@ -123,7 +123,7 @@ export default function Chat() {
   return (
     <div className="flex flex-col w-full max-w-md py-24 mx-auto stretch">
       <div className="mb-4 p-4 bg-gray-100 rounded-lg shadow-md">
-        <h1 className="text-xl font-bold">Llama3-1-S: checkpoint Aug 24, 2024</h1>
+        <h1 className="text-xl font-bold">Ichigo: checkpoint Aug 24, 2024</h1>
         <p className="mt-2">This model is capable of multi-modality, you can input either text, or voice through recording button!</p>
         <p className="mt-2">Powered by <a href="https://homebrew.ltd/" target="_blank" className="text-blue-500 hover:underline">Homebrew Ltd</a> | <a href="https://homebrew.ltd/blog/llama3-just-got-ears" target="_blank" className="text-blue-500 hover:underline">Read our blog post</a></p>
       </div>
