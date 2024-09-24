@@ -59,7 +59,7 @@ export default function Chat() {
       mediaRecorderRef.current.onstop = async () => {
         const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
         const arrayBuffer = await audioBlob.arrayBuffer();
-        const audioContext = new (window.AudioContext )();
+        const audioContext = new (window.AudioContext)();
         const audioData = await audioContext.decodeAudioData(arrayBuffer);
 
         const channelData = [];
@@ -110,18 +110,23 @@ export default function Chat() {
     }
   };
 
-  const handleFormSubmit = (e:any) => {
+  const handleFormSubmit = (e: any) => {
     e.preventDefault();
     handleSubmit(e);
     setAudioURL(null);
   };
 
-  const displayInput = input.includes('<|sound_start|>') 
-    ? '🔊 🔊 Audio 🔊 🔊 ' 
+  const displayInput = input.includes('<|sound_start|>')
+    ? '🔊 🔊 Audio 🔊 🔊 '
     : input;
 
   return (
     <div className="flex flex-col w-full max-w-md py-24 mx-auto stretch">
+      <div className="mb-4 p-4 bg-gray-100 rounded-lg shadow-md">
+        <h1 className="text-xl font-bold">Llama3-1-S: checkpoint Aug 24, 2024</h1>
+        <p className="mt-2">This model is capable of multi-modality, you can input either text, or voice through recording button!</p>
+        <p className="mt-2">Powered by <a href="https://homebrew.ltd/" target="_blank" className="text-blue-500 hover:underline">Homebrew Ltd</a> | <a href="https://homebrew.ltd/blog/llama3-just-got-ears" target="_blank" className="text-blue-500 hover:underline">Read our blog post</a></p>
+      </div>
       <div className="flex-1 overflow-y-auto space-y-4 mb-4">
         {messages.map(m => {
           const displayContent = m.role === 'user'
