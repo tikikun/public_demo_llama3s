@@ -136,7 +136,7 @@ export default function Chat() {
             : m.content;
           return (
             <div key={m.id} className={`p-3 rounded-lg ${m.role === 'user' ? 'bg-blue-100 ml-auto' : 'bg-gray-100'} max-w-[80%]`}>
-              <p className="font-semibold mb-1">{m.role === 'user' ? 'You:' : 'LLama3-S:'}</p>
+              <p className="font-semibold mb-1">{m.role === 'user' ? 'You:' : 'Ichigo:'}</p>
               <p className="whitespace-pre-wrap text-sm">{displayContent}</p>
             </div>
           );
